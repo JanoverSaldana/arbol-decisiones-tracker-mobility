@@ -1,0 +1,85 @@
+
+FLUJO DE DECISIONES – VISITA DOMICILIARIA
+
+0) Inicio – Preparación
+   - Recolectar: documento (DNI/CE/PTP), dirección exacta, datos de convivencia, arrendador, referencias, datos de vivienda, cochera, zona y accesos.
+   - Evidencias: fotografías de fachada, cochera (si aplica), alrededores, y capturas de validaciones (app/web).
+
+1) Identidad y Residencia
+   1.1 ¿Presenta documento válido (DNI/CE/PTP)?
+       - NO → RECHAZADO (directo)
+       - SÍ → 1.2
+   1.2 ¿Reside en la dirección declarada?
+       - NO → RECHAZADO (directo)
+       - SÍ → 1.3
+   1.3 Tiempo de permanencia en la vivienda:
+       - < 6 meses → RECHAZADO (directo)
+       - 6–11 meses → 1.4
+       - ≥ 12 meses → Conforme preliminar en permanencia
+   1.4 Si 6–11 meses: ¿presenta contrato de arrendamiento vigente y verificable?
+       - SÍ → Conforme preliminar en permanencia
+       - NO → Estado OBSERVADO en permanencia
+
+2) Validación con Arrendador / Titular (si aplica)
+   2.1 ¿Arrendador es titular? ¿Nombre y teléfono correctos?
+       - Inconsistencias → OBSERVADO
+   2.2 Entrevista telefónica: ¿Conoce al inquilino y valida tiempo/perfil?
+       - NO conoce / suplantación → RECHAZADO (directo)
+       - Conoce pero hay dudas (tiempo/pagos/piso) → OBSERVADO
+       - Conoce y confirma todo → Conforme preliminar
+
+3) Vivienda
+   3.1 Material de construcción:
+       - Noble → Conforme
+       - No noble (madera, prefabricado, adobe, estera, quincha, otros) → OBSERVADO
+   3.2 Techo:
+       - Techada → Conforme
+       - No techada → OBSERVADO
+   3.3 Estado (bueno/regular/en construcción/modesta/precaria):
+       - Bueno → Conforme
+       - Regular / en construcción / modesta → OBSERVADO
+       - Precaria → OBSERVADO (sugerencia: elevar a RECHAZADO si hay ≥2 observados adicionales críticos/medios)
+   3.4 Amoblamiento (amoblada/semiamoblada/no amoblada): solo registro
+
+4) Cochera (si el vehículo lo requiere)
+   4.1 ¿Cuenta con cochera?
+       - Propia o alquilada → 4.2
+       - No tiene / no indica → OBSERVADO (definir mitigante: estacionamiento seguro alterno)
+   4.2 Condiciones:
+       - Espacio adecuado + cerrada + fotos interiores → Conforme
+       - En calle / tipo pasadizo / negativa a fotos → OBSERVADO
+   4.3 Distancia entre vivienda y cochera:
+       - ≤ 4 cuadras → Conforme
+       - > 4 cuadras → OBSERVADO
+
+5) Zona y Accesos
+   5.1 Accesibilidad a la vivienda:
+       - Fácil → Conforme
+       - Regular → OBSERVADO
+       - Difícil / Inaccesible → OBSERVADO (sugerencia: elevar a RECHAZADO si se combina con ≥1 observado alto)
+   5.2 Características de la zona (vigilada, tranqueras, sin pistas/veredas, etc.):
+       - No vigilada / sin pistas/veredas → OBSERVADO
+   5.3 Nivel de seguridad (verificador / app):
+       - Segura / sin riesgo → Conforme
+       - Se transita con cautela → OBSERVADO
+       - Presencia delincuencial / peligrosa → RECHAZADO (directo)
+
+6) Convivencia
+   - Vive solo: OBSERVADO
+   - Vive con familia/otros: solo registro
+
+7) Reglas de Cierre (umbral y combinaciones)
+   7.1 Rechazo directo por reglas duras: documento inválido, no reside, <6 meses, arrendador no conoce/suplantación, zona peligrosa.
+   7.2 Rechazo por acumulación de observados (sin reglas duras):
+       - (a) 2 observados ALTOS distintos  → RECHAZADO
+           * Ejemplos de ALTOS: 6–11 meses sin contrato, acceso difícil/inaccesible, dudas del arrendador, material no noble + techo no techado (como paquete).
+       - (b) 1 observado ALTO + 2 observados MEDIOS → RECHAZADO
+           * MEDIOS: cochera en calle o >4 cuadras, negativa a fotos, zona no vigilada/sin pistas, vive solo.
+       - (c) ≥ 4 observados MEDIOS → RECHAZADO
+   7.3 Si no se alcanza rechazo: 
+       - Peso acumulado ≥ 70% y sin observados críticos → CONFORME
+       - Peso acumulado 50–69% o existen observados a subsanar → OBSERVADO (solicitar evidencias/mitigaciones)
+       - Peso acumulado < 50% → RECHAZADO
+
+8) Registro final
+   - Informe con: estado (Conforme/Observado/Rechazado), evidencias fotográficas, resultados de llamadas, y notas del verificador.
