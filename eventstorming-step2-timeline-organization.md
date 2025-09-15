@@ -10,376 +10,418 @@ Comenzamos con el **happy path** (flujo exitoso) y luego agregamos **escenarios 
 
 ## 🎯 FLUJO 1: Onboarding de Conductor y Vehículo
 
-### Happy Path: Onboarding Exitoso
+### Flujo Secuencial Integrado con Alternativas
 
 ```mermaid
-timeline
-    title Happy Path - Onboarding Exitoso
+flowchart TD
+    A[1. Perfil de conductor fue creado] --> B{Datos válidos?}
+    B -->|✅ SI| C[2. Licencia de conducir fue validada]
+    B -->|❌ NO| B1[1.1 Datos incompletos detectados] --> B2[1.2 Usuario corrige datos] --> C
     
-    section Registro
-        Perfil de conductor fue creado : Datos válidos
-        Licencia de conducir fue validada : Verificación oficial exitosa
-        Conductor fue aprobado por administrador : Activación manual
-        
-    section Vehículo
-        Vehículo fue registrado con datos técnicos : VIN válido, documentos correctos
-        Propiedad del vehículo fue verificada : Documentos legales válidos
-        Vehículo fue asignado a un conductor : Vinculación exitosa
-        Historial de mantenimientos fue creado : Sistema listo
+    C --> D{Licencia válida?}
+    D -->|✅ SI| E[3. Conductor fue aprobado por administrador]
+    D -->|❌ NO| D1[2.1 Licencia rechazada] --> D2[2.2 Documentación adicional solicitada] --> D3[2.3 Licencia actualizada proporcionada] --> C
+    
+    E --> F{Administrador aprueba?}
+    F -->|✅ SI| G[4. Vehículo fue registrado con datos técnicos]
+    F -->|❌ NO| F1[3.1 Conductor rechazado] --> F2[3.2 Motivo comunicado] --> F3[3.3 Proceso cancelado]
+    
+    G --> H{VIN válido?}
+    H -->|✅ SI| I[5. Propiedad del vehículo fue verificada]
+    H -->|❌ NO| H1[4.1 Error de validación VIN] --> H2[4.2 Datos correctos solicitados] --> H3[4.3 VIN corregido] --> I
+    
+    I --> J{Documentos válidos?}
+    J -->|✅ SI| K[6. Vehículo fue asignado a conductor]
+    J -->|❌ NO| J1[5.1 Documentos rechazados] --> J2[5.2 Documentos adicionales solicitados] --> J3[5.3 Documentos válidos proporcionados] --> K
+    
+    K --> L[7. Historial de mantenimientos fue creado]
+    L --> M[✅ ONBOARDING COMPLETADO]
 ```
 
-**Secuencia Happy Path:**
+**Secuencia Integrada con Puntos de Decisión:**
+
+**Flujo Principal:**
 1. **Perfil de conductor fue creado con datos personales y de contacto**
-2. **Licencia de conducir fue validada exitosamente**
+   - *🔀 ¿Datos completos y válidos?*
+     - **✅ SI**: Continúa al paso 2
+     - **❌ NO**: 1.1 → 1.2 → vuelve a paso 1
+
+2. **Licencia de conducir fue validada**
+   - *🔀 ¿Licencia vigente y válida?*
+     - **✅ SI**: Continúa al paso 3
+     - **❌ NO**: 2.1 → 2.2 → 2.3 → vuelve a paso 2
+
 3. **Conductor fue aprobado por administrador**
+   - *🔀 ¿Administrador aprueba?*
+     - **✅ SI**: Continúa al paso 4
+     - **❌ NO**: 3.1 → 3.2 → 3.3 → **FIN (Cancelado)**
+
 4. **Vehículo fue registrado con datos técnicos (VIN, marca, modelo, año)**
-5. **Propiedad del vehículo fue verificada exitosamente**
+   - *🔀 ¿VIN válido y datos correctos?*
+     - **✅ SI**: Continúa al paso 5
+     - **❌ NO**: 4.1 → 4.2 → 4.3 → vuelve a paso 5
+
+5. **Propiedad del vehículo fue verificada**
+   - *🔀 ¿Documentos de propiedad válidos?*
+     - **✅ SI**: Continúa al paso 6
+     - **❌ NO**: 5.1 → 5.2 → 5.3 → vuelve a paso 6
+
 6. **Vehículo fue asignado a un conductor**
 7. **Historial de mantenimientos del vehículo fue creado**
 
-### Unhappy Path: Onboarding con Problemas
+**Rutas Alternativas Detalladas:**
 
-```mermaid
-timeline
-    title Unhappy Path - Problemas en Onboarding
-    
-    section Problemas de Registro
-        Perfil de conductor fue creado : Datos incompletos
-        Licencia de conducir fue rechazada : Vencida o inválida
-        Conductor fue rechazado por administrador : No cumple criterios
-        
-    section Problemas de Vehículo  
-        Vehículo fue registrado con datos incompletos : VIN inválido
-        Propiedad del vehículo fue rechazada : Documentos faltantes
-        Asignación de vehículo fue bloqueada : Restricciones legales
-```
+**Ruta 1.1-1.2**: Datos Incompletos
+- 1.1 **Datos incompletos fueron detectados**
+- 1.2 **Usuario fue notificado y corrigió datos**
 
-**Secuencias Unhappy Path:**
+**Ruta 2.1-2.3**: Licencia Inválida
+- 2.1 **Licencia de conducir fue rechazada por estar vencida**
+- 2.2 **Documentación adicional fue solicitada**
+- 2.3 **Licencia actualizada fue proporcionada**
 
-**A) Licencia Inválida:**
-1. **Perfil de conductor fue creado con datos personales y de contacto**
-2. **Licencia de conducir fue rechazada por estar vencida**
-3. **Conductor fue notificado del rechazo**
-4. **Documentación adicional fue solicitada**
-5. **Licencia actualizada fue proporcionada**
-6. **Licencia de conducir fue validada exitosamente** *(reinicia happy path)*
+**Ruta 3.1-3.3**: Rechazo Administrativo
+- 3.1 **Conductor fue rechazado por administrador**
+- 3.2 **Motivo del rechazo fue comunicado**
+- 3.3 **Proceso de onboarding fue cancelado**
 
-**B) VIN Inválido:**
-1. **Vehículo fue registrado con VIN inválido**
-2. **Error de validación de VIN fue detectado**
-3. **Registro de vehículo fue rechazado**
-4. **Datos correctos fueron solicitados al usuario**
-5. **Vehículo fue registrado con datos técnicos corregidos** *(reinicia validación)*
+**Ruta 4.1-4.3**: VIN Inválido
+- 4.1 **Error de validación de VIN fue detectado**
+- 4.2 **Datos correctos fueron solicitados al usuario**
+- 4.3 **Vehículo fue registrado con datos técnicos corregidos**
 
-**C) Rechazo Administrativo:**
-1. **Perfil de conductor fue creado**
-2. **Licencia de conducir fue validada**
-3. **Conductor fue rechazado por administrador**
-4. **Motivo del rechazo fue comunicado**
-5. **Proceso de onboarding fue cancelado**
+**Ruta 5.1-5.3**: Documentos Inválidos
+- 5.1 **Propiedad del vehículo fue rechazada**
+- 5.2 **Documentos adicionales fueron solicitados**
+- 5.3 **Documentos válidos fueron proporcionados**
 
 ## 🔧 FLUJO 2: Instalación y Configuración IoT
 
-### Happy Path: Instalación Exitosa
+### Flujo Secuencial Integrado con Alternativas
 
 ```mermaid
-timeline
-    title Happy Path - Instalación IoT Exitosa
+flowchart TD
+    A[8. Dispositivo IoT solicitado para instalación] --> B{Stock disponible?}
+    B -->|✅ SI| C[9. Dispositivo IoT ingresado a inventario]
+    B -->|❌ NO| B1[8.1 Stock insuficiente detectado] --> B2[8.2 Orden de compra generada] --> B3[8.3 Cliente notificado del retraso] --> B4[8.4 Nueva fecha acordada] --> B5[8.5 Stock repuesto] --> C
     
-    section Preparación
-        Dispositivo IoT fue ingresado a inventario : Stock disponible
-        Dispositivo fue asignado a un vehículo : Planificación exitosa
-        
-    section Instalación
-        Dispositivo IoT fue instalado por mecánico : Instalación correcta
-        Adaptador OBD fue conectado al vehículo : Conexión estable
-        Instalación fue completada y verificada : Pruebas exitosas
-        
-    section Activación
-        GPS del dispositivo fue inicializado : Señal obtenida
-        Chip de red fue activado en dispositivo : Conectividad establecida
-        Prueba de conectividad fue exitosa : Todo funcionando
-        Dispositivo fue activado oficialmente : Go-live exitoso
+    C --> D[10. Dispositivo etiquetado con ID único]
+    D --> E[11. Dispositivo asignado a vehículo]
+    E --> F[12. Dispositivo instalado por mecánico]
+    F --> G{Puerto OBD funcional?}
+    G -->|✅ SI| H[13. Adaptador OBD conectado exitosamente]
+    G -->|❌ NO| G1[12.1 Adaptador OBD falló] --> G2[12.2 Puerto inspeccionado] --> G3[12.3 Daño identificado] --> G4[12.4 Puerto reparado] --> H
+    
+    H --> I[14. GPS del dispositivo inicializado]
+    I --> J{GPS obtiene señal?}
+    J -->|✅ SI| K[15. Chip de red activado]
+    J -->|❌ NO| J1[14.1 GPS falló inicialización] --> J2[14.2 Reubicación de dispositivo] --> K
+    
+    K --> L{Conectividad establecida?}
+    L -->|✅ SI| M[16. Prueba de conectividad exitosa]
+    L -->|❌ NO| L1[15.1 Chip no activó] --> L2[15.2 Problema de proveedor] --> L3[15.3 Chip reemplazado] --> M
+    
+    M --> N{Pruebas pasan?}
+    N -->|✅ SI| O[17. Claves de cifrado provisionadas]
+    N -->|❌ NO| N1[16.1 Prueba falló] --> N2[16.2 Diagnóstico realizado] --> N3[16.3 Dispositivo defectuoso] --> N4[16.4 Dispositivo reemplazado] --> O
+    
+    O --> P[18. Dispositivo activado oficialmente]
+    P --> Q[✅ INSTALACIÓN COMPLETADA]
 ```
 
-**Secuencia Happy Path:**
-8. **Dispositivo IoT fue ingresado a inventario**
-9. **Dispositivo IoT fue etiquetado con identificador único**
-10. **Dispositivo fue asignado a un vehículo**
-11. **Dispositivo IoT fue instalado en un vehículo por un mecánico**
-12. **Adaptador OBD fue conectado al vehículo exitosamente**
-13. **GPS del dispositivo fue inicializado**
-14. **Chip del proveedor de red fue activado en el dispositivo**
-15. **Prueba de conectividad del dispositivo fue completada exitosamente**
-16. **Claves de cifrado de dispositivo fueron provisionadas**
-17. **Dispositivo fue activado oficialmente**
+**Secuencia Integrada con Puntos de Decisión:**
 
-### Unhappy Path: Problemas de Instalación
-
-```mermaid
-timeline
-    title Unhappy Path - Problemas de Instalación
-    
-    section Problemas de Stock
-        Dispositivo IoT solicitado : No disponible en inventario
-        Orden de compra fue generada : Retraso en suministro
-        Cliente fue notificado del retraso : Comunicación del problema
-        
-    section Problemas de Instalación
-        Dispositivo IoT fue instalado : Puerto OBD dañado
-        Adaptador OBD falló al conectarse : Hardware incompatible
-        Instalación fue suspendida : Problema técnico
-        
-    section Problemas de Conectividad
-        GPS del dispositivo falló : Sin señal satelital
-        Chip de red no activó : Problema de proveedor
-        Prueba de conectividad falló : Sin comunicación
-        Dispositivo fue marcado defectuoso : Reemplazo necesario
-```
-
-**Secuencias Unhappy Path:**
-
-**A) Sin Stock Disponible:**
+**Flujo Principal:**
 8. **Dispositivo IoT fue solicitado para instalación**
-9. **Stock insuficiente fue detectado**
-10. **Orden de compra de dispositivos fue generada**
-11. **Cliente fue notificado del retraso estimado**
-12. **Nueva fecha de instalación fue acordada**
-13. **Stock de dispositivos fue repuesto por proveedor**
-14. **Dispositivo IoT fue ingresado a inventario** *(reinicia happy path)*
+   - *🔀 ¿Hay stock disponible?*
+     - **✅ SI**: Continúa al paso 9
+     - **❌ NO**: 8.1 → 8.2 → 8.3 → 8.4 → 8.5 → continúa
 
-**B) Falla de Instalación:**
-11. **Dispositivo IoT fue instalado por mecánico**
-12. **Adaptador OBD falló al conectarse**
-13. **Puerto OBD del vehículo fue inspeccionado**
-14. **Daño en puerto OBD fue identificado**
-15. **Reparación de puerto OBD fue programada**
-16. **Puerto OBD fue reparado**
-17. **Adaptador OBD fue conectado exitosamente** *(reinicia desde paso 12)*
+9. **Dispositivo IoT fue ingresado a inventario**
+10. **Dispositivo IoT fue etiquetado con identificador único**
+11. **Dispositivo fue asignado a un vehículo**
+12. **Dispositivo IoT fue instalado por un mecánico**
+    - *🔀 ¿Puerto OBD funcional?*
+      - **✅ SI**: Continúa al paso 13
+      - **❌ NO**: 12.1 → 12.2 → 12.3 → 12.4 → continúa
 
-**C) Falla de Conectividad:**
-15. **Prueba de conectividad del dispositivo falló**
-16. **Diagnóstico de dispositivo fue realizado**
-17. **Dispositivo fue identificado como defectuoso**
-18. **Dispositivo defectuoso fue reemplazado**
-19. **Nuevo dispositivo fue activado oficialmente** *(éxito tras reemplazo)*
+13. **Adaptador OBD fue conectado al vehículo exitosamente**
+14. **GPS del dispositivo fue inicializado**
+    - *🔀 ¿GPS obtiene señal?*
+      - **✅ SI**: Continúa al paso 15
+      - **❌ NO**: 14.1 → 14.2 → continúa
+
+15. **Chip del proveedor de red fue activado en el dispositivo**
+    - *🔀 ¿Conectividad establecida?*
+      - **✅ SI**: Continúa al paso 16
+      - **❌ NO**: 15.1 → 15.2 → 15.3 → continúa
+
+16. **Prueba de conectividad del dispositivo fue completada**
+    - *🔀 ¿Todas las pruebas pasan?*
+      - **✅ SI**: Continúa al paso 17
+      - **❌ NO**: 16.1 → 16.2 → 16.3 → 16.4 → continúa
+
+17. **Claves de cifrado de dispositivo fueron provisionadas**
+18. **Dispositivo fue activado oficialmente**
+
+**Rutas Alternativas Detalladas:**
+
+**Ruta 8.1-8.5**: Sin Stock
+- 8.1 **Stock insuficiente fue detectado**
+- 8.2 **Orden de compra de dispositivos fue generada**
+- 8.3 **Cliente fue notificado del retraso estimado**
+- 8.4 **Nueva fecha de instalación fue acordada**
+- 8.5 **Stock de dispositivos fue repuesto por proveedor**
+
+**Ruta 12.1-12.4**: Puerto OBD Dañado
+- 12.1 **Adaptador OBD falló al conectarse**
+- 12.2 **Puerto OBD del vehículo fue inspeccionado**
+- 12.3 **Daño en puerto OBD fue identificado**
+- 12.4 **Puerto OBD fue reparado**
+
+**Ruta 14.1-14.2**: GPS Sin Señal
+- 14.1 **GPS falló en inicialización**
+- 14.2 **Reubicación de dispositivo fue realizada**
+
+**Ruta 15.1-15.3**: Problema de Conectividad
+- 15.1 **Chip de red no activó**
+- 15.2 **Problema de proveedor fue identificado**
+- 15.3 **Chip de red fue reemplazado**
+
+**Ruta 16.1-16.4**: Dispositivo Defectuoso
+- 16.1 **Prueba de conectividad falló**
+- 16.2 **Diagnóstico de dispositivo fue realizado**
+- 16.3 **Dispositivo fue identificado como defectuoso**
+- 16.4 **Dispositivo defectuoso fue reemplazado**
 
 ## 📡 FLUJO 3: Operación Normal - Monitoreo Continuo
 
-### Happy Path: Monitoreo Sin Problemas
+### Flujo Secuencial Integrado con Alternativas
 
 ```mermaid
-timeline
-    title Happy Path - Operación Normal
+flowchart TD
+    A[19. Conductor encendió vehículo] --> B{Dispositivo responde?}
+    B -->|✅ SI| C[20. Datos telemétricos enviados por IoT]
+    B -->|❌ NO| B1[19.1 Dispositivo IoT no respondió] --> B2[19.2 Timeout detectado] --> B3[19.3 Alerta de conectividad generada] --> B4[19.4 Diagnóstico remoto iniciado] --> B5{Auto-recupera?}
+    B5 -->|✅ SI| B6[19.5 Conectividad recuperada] --> C
+    B5 -->|❌ NO| B7[19.6 Técnico notificado] --> FAIL[❌ SESIÓN FALLIDA]
     
-    section Conducción
-        Conductor encendió vehículo : Inicio exitoso
-        Datos telemétricos fueron enviados : Transmisión continua
-        Ubicación fue actualizada con GPS : Tracking preciso
-        Odómetro fue actualizado : Kilometraje correcto
-        
-    section Análisis
-        Datos telemétricos fueron recibidos : Procesamiento exitoso
-        Condición de riesgo fue evaluada por IA : Todo normal
-        Conducción eficiente fue reconocida : Feedback positivo
-        Motor fue apagado : Sesión completada
+    C --> D[21. Datos recibidos por plataforma]
+    D --> E{Datos válidos?}
+    E -->|✅ SI| F[22. Datos telemétricos validados]
+    E -->|❌ NO| E1[21.1 Validación falló] --> E2[21.2 Datos corruptos descartados] --> E3[21.3 Retransmisión solicitada] --> E4[21.4 Datos válidos recibidos] --> F
+    
+    F --> G[23. Ubicación actualizada con GPS]
+    G --> H[24. Odómetro actualizado con telemetría]
+    H --> I[25. Condición evaluada por IA]
+    I --> J{Condición del vehículo?}
+    
+    J -->|🟢 NORMAL| K[26. Conducción eficiente reconocida]
+    J -->|🟡 RIESGO| J1[25.1 Condición de riesgo detectada] --> J2[25.2 Alerta preventiva generada] --> J3[25.3 Conductor notificado] --> K
+    J -->|🔴 CRÍTICA| J4[25.4 Condición crítica detectada] --> J5[25.5 Código DTC registrado] --> J6[25.6 Alerta crítica generada] --> J7[25.7 Conductor notificado emergencia] --> J8[25.8 Taller más cercano localizado] --> J9[25.9 Cita emergencia creada] --> EMERGENCY[🚨 FLUJO EMERGENCIA]
+    
+    K --> L[27. Motor fue apagado por conductor]
+    L --> M[✅ SESIÓN COMPLETADA]
 ```
 
-**Secuencia Happy Path:**
-18. **Conductor encendió vehículo**
-19. **Datos telemétricos fueron enviados por el dispositivo IoT**
-20. **Datos telemétricos fueron recibidos por la plataforma**
-21. **Datos telemétricos fueron validados exitosamente**
-22. **Ubicación del vehículo fue actualizada con datos GPS**
-23. **Odómetro fue actualizado con base en telemetría**
-24. **Condición de riesgo fue evaluada por la IA como normal**
-25. **Conducción eficiente fue reconocida**
-26. **Motor fue apagado por conductor**
+**Secuencia Integrada con Puntos de Decisión:**
 
-### Unhappy Path: Problemas Durante Operación
+**Flujo Principal:**
+19. **Conductor encendió vehículo**
+    - *🔀 ¿Dispositivo IoT responde?*
+      - **✅ SI**: Continúa al paso 20
+      - **❌ NO**: 19.1 → 19.2 → 19.3 → 19.4 → 19.5 o falla
 
-```mermaid
-timeline
-    title Unhappy Path - Problemas Operacionales
-    
-    section Problemas de Transmisión
-        Conductor encendió vehículo : Dispositivo no responde
-        Datos telemétricos no fueron enviados : Sin conectividad
-        Timeout de comunicación detectado : Pérdida de señal
-        
-    section Problemas de Datos
-        Datos telemétricos fueron recibidos : Datos corruptos
-        Validación de datos falló : Información inconsistente
-        Alerta de calidad de datos generada : Problema detectado
-        
-    section Problemas Críticos
-        Condición crítica fue detectada : Falla del motor
-        Alerta crítica fue generada : Emergencia
-        Conductor fue notificado inmediatamente : Acción requerida
-```
+20. **Datos telemétricos fueron enviados por el dispositivo IoT**
+21. **Datos telemétricos fueron recibidos por la plataforma**
+    - *🔀 ¿Datos son válidos?*
+      - **✅ SI**: Continúa al paso 22
+      - **❌ NO**: 21.1 → 21.2 → 21.3 → 21.4 → continúa
 
-**Secuencias Unhappy Path:**
+22. **Datos telemétricos fueron validados exitosamente**
+23. **Ubicación del vehículo fue actualizada con datos GPS**
+24. **Odómetro fue actualizado con base en telemetría**
+25. **Condición de riesgo fue evaluada por la IA**
+    - *🔀 ¿Cuál es la condición del vehículo?*
+      - **🟢 NORMAL**: Continúa al paso 26
+      - **🟡 RIESGO**: 25.1 → 25.2 → 25.3 → continúa al paso 26
+      - **🔴 CRÍTICA**: 25.4 → 25.5 → 25.6 → 25.7 → 25.8 → 25.9 → **EMERGENCIA**
 
-**A) Pérdida de Conectividad:**
-18. **Conductor encendió vehículo**
-19. **Dispositivo IoT no respondió**
-20. **Timeout de comunicación fue detectado**
-21. **Alerta de conectividad fue generada**
-22. **Diagnóstico remoto fue iniciado**
-23. **Dispositivo IoT recuperó conectividad** *(auto-recuperación)*
-24. **Datos telemétricos fueron enviados** *(reinicia transmisión)*
+26. **Conducción eficiente fue reconocida** *(si aplicable)*
+27. **Motor fue apagado por conductor**
 
-**B) Datos Corruptos:**
-19. **Datos telemétricos fueron enviados por el dispositivo IoT**
-20. **Datos telemétricos fueron recibidos por la plataforma**
-21. **Validación de datos falló por corrupción**
-22. **Datos corruptos fueron descartados**
-23. **Solicitud de retransmisión fue enviada**
-24. **Datos telemétricos válidos fueron recibidos** *(reinicia validación)*
+**Rutas Alternativas Detalladas:**
 
-**C) Detección de Falla Crítica:**
-24. **Condición crítica fue detectada por la IA**
-25. **Código de diagnóstico DTC fue registrado**
-26. **Alerta crítica fue generada inmediatamente**
-27. **Conductor fue notificado de la emergencia**
-28. **Recomendación de parar vehículo fue enviada**
-29. **Taller más cercano fue localizado**
-30. **Cita de emergencia fue creada automáticamente**
+**Ruta 19.1-19.6**: Falla de Conectividad
+- 19.1 **Dispositivo IoT no respondió**
+- 19.2 **Timeout de comunicación fue detectado**
+- 19.3 **Alerta de conectividad fue generada**
+- 19.4 **Diagnóstico remoto fue iniciado**
+- 19.5 **Dispositivo IoT recuperó conectividad** *(auto-recuperación)*
+  - O alternativamente: 19.6 **Técnico fue notificado para inspección**
+
+**Ruta 21.1-21.4**: Datos Corruptos
+- 21.1 **Validación de datos falló por corrupción**
+- 21.2 **Datos corruptos fueron descartados**
+- 21.3 **Solicitud de retransmisión fue enviada**
+- 21.4 **Datos telemétricos válidos fueron recibidos**
+
+**Ruta 25.1-25.3**: Condición de Riesgo
+- 25.1 **Condición de riesgo fue detectada**
+- 25.2 **Alerta preventiva fue generada**
+- 25.3 **Conductor fue notificado del riesgo**
+
+**Ruta 25.4-25.9**: Condición Crítica
+- 25.4 **Condición crítica fue detectada por la IA**
+- 25.5 **Código de diagnóstico DTC fue registrado**
+- 25.6 **Alerta crítica fue generada inmediatamente**
+- 25.7 **Conductor fue notificado de la emergencia**
+- 25.8 **Taller más cercano fue localizado**
+- 25.9 **Cita de emergencia fue creada automáticamente**
 
 ## 🔧 FLUJO 4: Mantenimiento Preventivo
 
-### Happy Path: Servicio Preventivo Exitoso
+### Flujo Secuencial Integrado con Alternativas
 
 ```mermaid
-timeline
-    title Happy Path - Mantenimiento Preventivo Exitoso
+flowchart TD
+    A[28. Recomendación de mantenimiento generada] --> B[29. Alerta preventiva generada]
+    B --> C{Conductor responde?}
+    C -->|✅ SI| D[30. Alerta reconocida por conductor]
+    C -->|❌ NO| C1[29.1 Alerta ignorada] --> C2[29.2 Recordatorio enviado] --> C3{Segunda respuesta?}
+    C3 -->|✅ SI| D
+    C3 -->|❌ NO| C4[29.3 Segunda alerta ignorada] --> C5[29.4 Condición empeoró] --> C6[29.5 Alerta crítica generada] --> D
     
-    section Detección Proactiva
-        Recomendación de mantenimiento fue generada : IA Predictiva
-        Alerta preventiva fue generada : Notificación temprana
-        Alerta fue reconocida por conductor : Respuesta proactiva
-        
-    section Programación Eficiente
-        Conductor solicitó cita de mantenimiento : Iniciativa del cliente
-        Taller fue seleccionado : Elección informada
-        Cita fue confirmada : Programación exitosa
-        Conductor llegó puntualmente : Sin retrasos
-        
-    section Servicio Completo
-        Vehículo fue recepcionado para cita : Check-in exitoso
-        Orden de servicio preventiva fue registrada : Documentación completa
-        Checklist de mantenimiento fue completado : Trabajo exitoso
-        Control de calidad pasó : Sin problemas
-        
-    section Cierre Satisfactorio
-        Presupuesto fue aprobado inmediatamente : Sin objeciones
-        Pago fue procesado exitosamente : Transacción fluida
-        Vehículo fue entregado al cliente : Cliente satisfecho
-        Próximo servicio fue programado : Continuidad asegurada
+    D --> E[31. Conductor solicitó cita]
+    E --> F{Disponibilidad?}
+    F -->|✅ SI| G[32. Taller seleccionado]
+    F -->|❌ NO| F1[31.1 Sin disponibilidad] --> F2[31.2 Lista de espera] --> F3[31.3 Cita reprogramada] --> F4[31.4 Cliente notificado retraso] --> G
+    
+    G --> H[33. Cita confirmada]
+    H --> I[34. Recordatorio enviado]
+    I --> J{Cliente asiste?}
+    J -->|✅ SI| K[35. Conductor llegó puntualmente]
+    J -->|❌ NO| J1[34.1 No-show detectado] --> J2[34.2 Cliente contactado] --> J3[34.3 Motivo consultado] --> J4[34.4 Nueva cita ofrecida] --> J5{Acepta nueva cita?}
+    J5 -->|✅ SI| H
+    J5 -->|❌ NO| CANCEL[❌ CITA CANCELADA]
+    
+    K --> L[36. Vehículo recepcionado]
+    L --> M[37. Orden de servicio registrada]
+    M --> N[38. Orden asignada a mecánico]
+    N --> O[39. Inspección inicial realizada]
+    O --> P{Problemas adicionales?}
+    P -->|❌ NO| Q[40. Checklist básico completado]
+    P -->|✅ SI| P1[39.1 Problemas adicionales encontrados] --> P2[39.2 Diagnóstico completo] --> P3[39.3 Presupuesto adicional] --> P4[39.4 Cliente contactado] --> P5{Cliente aprueba?}
+    P5 -->|✅ SI| P6[39.5 Trabajo completo autorizado] --> Q
+    P5 -->|❌ NO| P7[39.6 Solo mantenimiento básico] --> Q
+    
+    Q --> R[41. Control de calidad realizado]
+    R --> S{QC pasa?}
+    S -->|✅ SI| T[42. Orden finalizada]
+    S -->|❌ NO| S1[41.1 QC falló] --> S2[41.2 Retrabajo requerido] --> S3[41.3 Corrección realizada] --> T
+    
+    T --> U[43. Presupuesto generado]
+    U --> V[44. Cliente aprueba presupuesto]
+    V --> W[45. Factura emitida]
+    W --> X[46. Pago procesado]
+    X --> Y{Pago exitoso?}
+    Y -->|✅ SI| Z[47. Vehículo entregado]
+    Y -->|❌ NO| Y1[46.1 Pago rechazado] --> Y2[46.2 Cliente notificado] --> Y3[46.3 Método alternativo solicitado] --> Y4[46.4 Pago alternativo procesado] --> Y5{Segundo pago OK?}
+    Y5 -->|✅ SI| Z
+    Y5 -->|❌ NO| Y6[46.5 Vehículo retenido] --> Y7[46.6 Negociación de pago] --> Z
+    
+    Z --> AA[48. Garantía otorgada]
+    AA --> BB[49. Próximo servicio programado]
+    BB --> CC[50. Historial actualizado]
+    CC --> DD[✅ SERVICIO COMPLETADO]
 ```
 
-**Secuencia Happy Path:**
-27. **Recomendación de mantenimiento preventivo fue generada**
-28. **Alerta preventiva fue generada**
-29. **Alerta fue reconocida por el conductor**
-30. **Conductor solicitó cita de mantenimiento**
-31. **Taller fue seleccionado para la cita**
-32. **Cita de mantenimiento fue confirmada**
-33. **Recordatorio de cita fue enviado**
-34. **Conductor llegó puntualmente al taller**
-35. **Vehículo fue recepcionado para cita**
-36. **Orden de servicio preventiva fue registrada**
-37. **Orden de servicio fue asignada a un mecánico**
-38. **Checklist de mantenimiento fue completado exitosamente**
-39. **Control de calidad fue realizado y aprobado**
-40. **Orden de servicio fue finalizada**
-41. **Presupuesto fue generado automáticamente**
-42. **Cliente aprobó el presupuesto inmediatamente**
-43. **Factura fue emitida al cliente**
-44. **Pago fue procesado exitosamente**
-45. **Vehículo fue entregado al cliente**
-46. **Garantía fue otorgada por el servicio**
-47. **Próximo servicio fue programado**
-48. **Historial de mantenimientos fue actualizado**
+**Secuencia Integrada con Puntos de Decisión:**
 
-### Unhappy Path: Problemas en Mantenimiento Preventivo
+**Flujo Principal:**
+28. **Recomendación de mantenimiento preventivo fue generada**
+29. **Alerta preventiva fue generada**
+    - *🔀 ¿Conductor responde a la alerta?*
+      - **✅ SI**: Continúa al paso 30
+      - **❌ NO**: 29.1 → 29.2 → 29.3 → 29.4 → 29.5 → continúa
 
-```mermaid
-timeline
-    title Unhappy Path - Problemas en Mantenimiento Preventivo
-    
-    section Ignorar Alertas
-        Recomendación de mantenimiento fue generada : IA detecta necesidad
-        Alerta preventiva fue generada : Sistema notifica
-        Alerta fue ignorada por conductor : Sin respuesta
-        Condición empeoró : Degradación continua
-        
-    section Problemas de Programación
-        Conductor solicitó cita : Finalmente reacciona
-        No hay disponibilidad en taller : Agenda llena
-        Cita fue reprogramada : Retraso adicional
-        Conductor no asistió a cita : No-show
-        
-    section Problemas durante Servicio
-        Vehículo fue inspeccionado : Daños adicionales detectados
-        Problemas adicionales fueron encontrados : Mantenimiento correctivo necesario
-        Presupuesto aumentó significativamente : Costo inesperado
-        Cliente rechazó presupuesto : No autoriza trabajo
-        
-    section Problemas de Pago
-        Servicio fue completado : Trabajo finalizado
-        Pago fue rechazado : Problema financiero
-        Vehículo fue retenido : Garantía de pago
-        Método alternativo fue usado : Resolución posterior
-```
+30. **Alerta fue reconocida por el conductor**
+31. **Conductor solicitó cita de mantenimiento**
+    - *🔀 ¿Hay disponibilidad en taller?*
+      - **✅ SI**: Continúa al paso 32
+      - **❌ NO**: 31.1 → 31.2 → 31.3 → 31.4 → continúa
 
-**Secuencias Unhappy Path:**
+32. **Taller fue seleccionado para la cita**
+33. **Cita de mantenimiento fue confirmada**
+34. **Recordatorio de cita fue enviado**
+    - *🔀 ¿Cliente asiste a la cita?*
+      - **✅ SI**: Continúa al paso 35
+      - **❌ NO**: 34.1 → 34.2 → 34.3 → 34.4 → segunda oportunidad o cancelación
 
-**A) Conductor Ignora Alertas:**
-27. **Recomendación de mantenimiento preventivo fue generada**
-28. **Alerta preventiva fue generada**
-29. **Alerta fue ignorada por el conductor**
-30. **Recordatorio de alerta fue enviado**
-31. **Segunda alerta fue ignorada**
-32. **Condición del vehículo empeoró**
-33. **Alerta crítica fue generada** *(escalamiento)*
-34. **Conductor finalmente reconoció la alerta crítica**
+35. **Conductor llegó puntualmente al taller**
+36. **Vehículo fue recepcionado para cita**
+37. **Orden de servicio preventiva fue registrada**
+38. **Orden de servicio fue asignada a un mecánico**
+39. **Inspección inicial fue realizada**
+    - *🔀 ¿Se encuentran problemas adicionales?*
+      - **❌ NO**: Continúa al paso 40 (mantenimiento básico)
+      - **✅ SI**: 39.1 → 39.2 → 39.3 → 39.4 → aprobación cliente → continúa
 
-**B) No Disponibilidad de Cita:**
-30. **Conductor solicitó cita de mantenimiento**
-31. **Disponibilidad de taller fue consultada**
-32. **No hay slots disponibles fue reportado**
-33. **Lista de espera fue ofrecida**
-34. **Cita fue reprogramada para fecha posterior**
-35. **Cliente fue notificado del retraso**
+40. **Checklist de mantenimiento fue completado exitosamente**
+41. **Control de calidad fue realizado**
+    - *🔀 ¿Control de calidad aprueba?*
+      - **✅ SI**: Continúa al paso 42
+      - **❌ NO**: 41.1 → 41.2 → 41.3 → continúa
 
-**C) No-Show del Cliente:**
-34. **Conductor no llegó a la cita programada**
-35. **Cita fue marcada como perdida (no-show)**
-36. **Cliente fue contactado por ausencia**
-37. **Motivo de ausencia fue consultado**
-38. **Nueva cita fue ofrecida**
-39. **Cita de mantenimiento fue confirmada** *(segunda oportunidad)*
+42. **Orden de servicio fue finalizada**
+43. **Presupuesto fue generado automáticamente**
+44. **Cliente aprobó el presupuesto inmediatamente**
+45. **Factura fue emitida al cliente**
+46. **Pago fue procesado**
+    - *🔀 ¿Pago es exitoso?*
+      - **✅ SI**: Continúa al paso 47
+      - **❌ NO**: 46.1 → 46.2 → 46.3 → 46.4 → retry o retención
 
-**D) Problemas Adicionales Detectados:**
-36. **Orden de servicio preventiva fue registrada**
-37. **Inspección inicial fue realizada**
-38. **Problemas adicionales fueron descubiertos**
-39. **Diagnóstico completo fue realizado**
-40. **Presupuesto adicional fue generado**
-41. **Cliente fue contactado sobre costos adicionales**
-42. **Cliente rechazó presupuesto adicional**
-43. **Solo mantenimiento básico fue realizado**
+47. **Vehículo fue entregado al cliente**
+48. **Garantía fue otorgada por el servicio**
+49. **Próximo servicio fue programado**
+50. **Historial de mantenimientos fue actualizado**
 
-**E) Pago Rechazado:**
-44. **Pago fue procesado**
-45. **Pago fue rechazado por entidad bancaria**
-46. **Cliente fue notificado del rechazo**
-47. **Vehículo fue temporalmente retenido**
-48. **Método de pago alternativo fue solicitado**
-49. **Pago con método alternativo fue procesado**
-50. **Pago fue aprobado exitosamente**
-51. **Vehículo fue liberado al cliente**
+**Rutas Alternativas Detalladas:**
+
+**Ruta 29.1-29.5**: Alertas Ignoradas
+- 29.1 **Alerta fue ignorada por el conductor**
+- 29.2 **Recordatorio de alerta fue enviado**
+- 29.3 **Segunda alerta fue ignorada**
+- 29.4 **Condición del vehículo empeoró**
+- 29.5 **Alerta crítica fue generada** *(escalamiento)*
+
+**Ruta 31.1-31.4**: Sin Disponibilidad
+- 31.1 **No hay slots disponibles fue reportado**
+- 31.2 **Lista de espera fue ofrecida**
+- 31.3 **Cita fue reprogramada para fecha posterior**
+- 31.4 **Cliente fue notificado del retraso**
+
+**Ruta 34.1-34.4**: No-Show
+- 34.1 **Conductor no llegó a la cita programada (no-show)**
+- 34.2 **Cliente fue contactado por ausencia**
+- 34.3 **Motivo de ausencia fue consultado**
+- 34.4 **Nueva cita fue ofrecida**
+
+**Ruta 39.1-39.6**: Problemas Adicionales
+- 39.1 **Problemas adicionales fueron descubiertos**
+- 39.2 **Diagnóstico completo fue realizado**
+- 39.3 **Presupuesto adicional fue generado**
+- 39.4 **Cliente fue contactado sobre costos adicionales**
+- 39.5 **Trabajo completo autorizado** O 39.6 **Solo mantenimiento básico fue realizado**
+
+**Ruta 46.1-46.6**: Pago Rechazado
+- 46.1 **Pago fue rechazado por entidad bancaria**
+- 46.2 **Cliente fue notificado del rechazo**
+- 46.3 **Método de pago alternativo fue solicitado**
+- 46.4 **Pago con método alternativo fue procesado**
+- 46.5 **Vehículo fue temporalmente retenido** *(si segundo pago falla)*
+- 46.6 **Negociación de pago fue iniciada**
 
 ## � FLUJO 5: Mantenimiento Correctivo (Emergencia)
 
